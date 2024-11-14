@@ -1,0 +1,42 @@
+Type: 'AWS::DynamoDB::Table'
+Properties:
+  TableName: ${self:custom.prjPrefix}-vote-count
+  AttributeDefinitions:
+    -
+      AttributeName: serviceId
+      AttributeType: S
+    -
+      AttributeName: contentId
+      AttributeType: S
+    -
+      AttributeName: contentIdType
+      AttributeType: S
+  KeySchema:
+    -
+      AttributeName: serviceId
+      KeyType: HASH
+    -
+      AttributeName: contentIdType
+      KeyType: RANGE
+
+  BillingMode: ${self:custom.dynamodbConfig.voteCount.billingMode}
+  ProvisionedThroughput:
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.voteCount.provisionedThroughput.readCapacityUnits}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.voteCount.provisionedThroughput.writeCapacityUnits}
+
+  Tags:
+    - Key: backup
+      Value: ${self:custom.dynamoDbBackupTargetTagValue}
+
+  LocalSecondaryIndexes:
+    -
+      IndexName: ServiceIdContentIdLsi
+      KeySchema:
+      -
+        AttributeName: serviceId
+        KeyType: HASH
+      -
+        AttributeName: contentId
+        KeyType: RANGE
+      Projection:
+        ProjectionType: ALL

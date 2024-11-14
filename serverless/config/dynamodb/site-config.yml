@@ -1,0 +1,21 @@
+Type: 'AWS::DynamoDB::Table'
+Properties:
+  TableName: ${self:custom.prjPrefix}-site-config
+  AttributeDefinitions:
+    -
+      AttributeName: configName
+      AttributeType: S
+  KeySchema:
+    -
+      AttributeName: configName
+      KeyType: HASH
+
+  BillingMode: ${self:custom.dynamodbConfig.siteConfig.billingMode}
+  ProvisionedThroughput:
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.siteConfig.provisionedThroughput.readCapacityUnits}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.siteConfig.provisionedThroughput.writeCapacityUnits}
+
+  Tags:
+    - Key: backup
+      Value: ${self:custom.dynamoDbBackupTargetTagValue}
+

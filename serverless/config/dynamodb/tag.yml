@@ -1,0 +1,43 @@
+Type: 'AWS::DynamoDB::Table'
+Properties:
+  TableName: ${self:custom.prjPrefix}-tag
+  AttributeDefinitions:
+    -
+      AttributeName: tagId
+      AttributeType: S
+    -
+      AttributeName: serviceId
+      AttributeType: S
+    -
+      AttributeName: label
+      AttributeType: S
+  KeySchema:
+    -
+      AttributeName: tagId
+      KeyType: HASH
+
+  BillingMode: ${self:custom.dynamodbConfig.tag.billingMode}
+  ProvisionedThroughput:
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.tag.provisionedThroughput.readCapacityUnits}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.tag.provisionedThroughput.writeCapacityUnits}
+
+  Tags:
+    - Key: backup
+      Value: ${self:custom.dynamoDbBackupTargetTagValue}
+
+  GlobalSecondaryIndexes:
+    -
+      IndexName: TagsByServiceIdGsi
+      KeySchema:
+      -
+        AttributeName: serviceId
+        KeyType: HASH
+      -
+        AttributeName: label
+        KeyType: RANGE
+      Projection:
+        ProjectionType: ALL
+      #BillingMode: PAY_PER_REQUEST
+      #ProvisionedThroughput:
+      #  ReadCapacityUnits: 5
+      #  WriteCapacityUnits: 3

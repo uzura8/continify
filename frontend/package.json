@@ -1,0 +1,51 @@
+{
+  "name": "gpcms",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "format": "prettier --write src/"
+  },
+  "dependencies": {
+    "@tinymce/tinymce-vue": "^6.0.1",
+    "@vuepic/vue-datepicker": "^5.3.0",
+    "@yaireo/tagify": "^4.17.8",
+    "amazon-cognito-identity-js": "^6.3.1",
+    "animate.css": "^4.1.1",
+    "axios": "^1.4.0",
+    "bulma": "^0.9.4",
+    "bulma-toast": "^2.4.2",
+    "highlight.js": "^11.9.0",
+    "json-editor-vue": "^0.12.0",
+    "luxon": "^3.3.0",
+    "marked": "^5.1.0",
+    "marked-highlight": "^2.0.1",
+    "md-editor-v3": "^4.2.0",
+    "postcss": "^8.4.24",
+    "primeflex": "^3.3.1",
+    "primevue": "^3.29.2",
+    "ulid": "^2.3.0",
+    "vue": "^3.3.4",
+    "vue-3-sanitize": "^0.1.4",
+    "vue-i18n": "^9.2.2",
+    "vue-router": "^4.2.2",
+    "vue3-clipboard": "^1.0.0",
+    "vuedraggable": "^4.1.0",
+    "vuex": "^4.1.0"
+  },
+  "devDependencies": {
+    "@intlify/unplugin-vue-i18n": "^0.11.0",
+    "@rushstack/eslint-patch": "^1.2.0",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "@vue/eslint-config-prettier": "^7.1.0",
+    "eslint": "^8.39.0",
+    "eslint-plugin-vue": "^9.11.0",
+    "postcss-nesting": "^11.2.2",
+    "prettier": "^2.8.8",
+    "sass": "^1.63.4",
+    "vite": "^4.3.9"
+  }
+}

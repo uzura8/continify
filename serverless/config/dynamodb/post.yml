@@ -1,0 +1,88 @@
+Type: "AWS::DynamoDB::Table"
+Properties:
+  TableName: ${self:custom.prjPrefix}-post
+  AttributeDefinitions:
+    - AttributeName: postId
+      AttributeType: S
+    - AttributeName: serviceIdSlug
+      AttributeType: S
+    - AttributeName: serviceId
+      AttributeType: S
+    - AttributeName: statusPublishAt
+      AttributeType: S
+    - AttributeName: createdAt
+      AttributeType: S
+    - AttributeName: publishAt
+      AttributeType: S
+    - AttributeName: statusCategoryPathPublishAt
+      AttributeType: S
+  KeySchema:
+    - AttributeName: postId
+      KeyType: HASH
+
+  BillingMode: ${self:custom.dynamodbConfig.post.billingMode}
+  ProvisionedThroughput:
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.post.provisionedThroughput.readCapacityUnits}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.post.provisionedThroughput.writeCapacityUnits}
+
+  Tags:
+    - Key: backup
+      Value: ${self:custom.dynamoDbBackupTargetTagValue}
+
+  StreamSpecification:
+    StreamViewType: NEW_AND_OLD_IMAGES
+
+  GlobalSecondaryIndexes:
+    - IndexName: serviceIdSlugGsi
+      KeySchema:
+        - AttributeName: serviceIdSlug
+          KeyType: HASH
+      Projection:
+        ProjectionType: ALL
+      #ProvisionedThroughput:
+      #  ReadCapacityUnits: 5
+      #  WriteCapacityUnits: 3
+    - IndexName: statusPublishAtGsi
+      KeySchema:
+        - AttributeName: serviceId
+          KeyType: HASH
+        - AttributeName: statusPublishAt
+          KeyType: RANGE
+      Projection:
+        ProjectionType: ALL
+      #ProvisionedThroughput:
+      #  ReadCapacityUnits: 5
+      #  WriteCapacityUnits: 3
+    - IndexName: statusCategoryPathPublishAtGsi
+      KeySchema:
+        - AttributeName: serviceId
+          KeyType: HASH
+        - AttributeName: statusCategoryPathPublishAt
+          KeyType: RANGE
+      Projection:
+        ProjectionType: ALL
+      #ProvisionedThroughput:
+      #  ReadCapacityUnits: 5
+      #  WriteCapacityUnits: 3
+    - IndexName: createdAtGsi
+      KeySchema:
+        - AttributeName: serviceId
+          KeyType: HASH
+        - AttributeName: createdAt
+          KeyType: RANGE
+      Projection:
+        ProjectionType: ALL
+      #ProvisionedThroughput:
+      #  ReadCapacityUnits: 5
+      #  WriteCapacityUnits: 3
+    - IndexName: publishAtGsi
+      KeySchema:
+        - AttributeName: serviceId
+          KeyType: HASH
+        - AttributeName: publishAt
+          KeyType: RANGE
+      Projection:
+        ProjectionType: ALL
+      #ProvisionedThroughput:
+      #  ReadCapacityUnits: 5
+      #  WriteCapacityUnits: 3

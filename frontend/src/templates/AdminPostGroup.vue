@@ -1,0 +1,305 @@
+<template>
+  <div>
+    <div class="block">
+      <router-link :to="`/admin/posts/${serviceId}/groups`">
+        <i class="fas fa-chevron-left"></i>
+        <span>{{ $t('page.AdminPostGroupManagement') }}</span>
+      </router-link>
+    </div>
+
+    <div v-if="postGroup">
+      <h1 class="title">{{ $t('term.postGroup') }}</h1>
+      <p class="subtitle is-5">{{ postGroupLabel }}</p>
+    </div>
+
+    <div
+      v-if="hasEditorRole"
+      class="is-pulled-right"
+    >
+      <eb-dropdown position="is-right">
+        <template v-slot:label>
+          <span class="icon">
+            <i class="fas fa-edit"></i>
+          </span>
+        </template>
+        <div class="dropdown-content">
+          <router-link
+            :to="`/admin/posts/${serviceId}/groups/${slug}/edit`"
+            class="dropdown-item"
+          >
+            <span class="icon">
+              <i class="fas fa-pen"></i>
+            </span>
+            <span>{{ $t('common.edit') }}</span>
+          </router-link>
+
+          <a
+            @click="isConfirmDeleteDialogActive = true"
+            class="dropdown-item is-clickable"
+          >
+            <span class="icon">
+              <i class="fas fa-trash"></i>
+            </span>
+            <span>{{ $t('common.delete') }}</span>
+          </a>
+        </div>
+      </eb-dropdown>
+    </div>
+
+    <EbDialog
+      v-model="isConfirmDeleteDialogActive"
+      :header-label="$t('common.confirmTo', { action: $t('common.delete') })"
+      :execute-button-label="$t('common.delete')"
+      execute-button-type="is-danger"
+      @execute="deletePostGroup()"
+      @close="isConfirmDeleteDialogActive = false"
+    >
+      <p>{{ $t('msg.cofirmToDelete') }}</p>
+    </EbDialog>
+
+    <div class="mt-6">
+      <span>
+        <button
+          v-if="hasEditorRole"
+          class="button"
+          @click="isPostModalActive = true"
+        >
+          <span class="icon">
+            <i class="fas fa-plus"></i>
+          </span>
+          <span>{{ $t('common.addFor', { target: $t('common.post') }) }}</span>
+        </button>
+      </span>
+
+      <BModal
+        :active="isPostModalActive"
+        :destroy-on-hide="false"
+        aria-role="dialog"
+        :can-cancel="false"
+        close-button-aria-label="Close"
+        aria-modal
+      >
+        <template #default="props">
+          <div
+            class="modal-card"
+            style="width: auto"
+          >
+            <header class="modal-card-head">
+              <p class="modal-card-title">
+                {{ $t('common.selectFor', { target: $t('common.post') }) }}
+              </p>
+              <button
+                type="button"
+                class="delete"
+                @click="isPostModalActive = false"
+              ></button>
+            </header>
+            <section class="modal-card-body">
+              <PostList
+                list-type="simpleSelect"
+                :selected-ids="postIds"
+                @select="addGroupItem"
+              />
+            </section>
+            <footer class="modal-card-foot">
+              <button
+                class="button"
+                type="button"
+                @click="isPostModalActive = false"
+              >
+                {{ $t('common.close') }}
+              </button>
+            </footer>
+          </div>
+        </template>
+      </BModal>
+    </div>
+    <div
+      class="mt-5"
+      v-if="groupItems.length > 0"
+    >
+      <draggable
+        :list="groupItems"
+        item-key="postId"
+        :group="`postGroup-${slug}`"
+        :options="{ handle: '.handle' }"
+        @start="drag = true"
+        @end="drag = false"
+        @update="updatePostGroup"
+      >
+        <template #item="{ element }">
+          <div class="columns is-mobile is-vcentered is-1">
+            <div class="column is-1 is-size-6">
+              <button
+                v-if="hasEditorRole"
+                class="button is-small handle"
+              >
+                <span class="icon is-small">
+                  <i class="fas fa-sort"></i>
+                </span>
+              </button>
+            </div>
+
+            <div class="column is-size-6">
+              <div>
+                <router-link :to="`/admin/posts/${serviceId}/${element.postId}`">{{
+                  element.title
+                }}</router-link>
+              </div>
+              <div class="is-size-7">
+                <span>{{ $t('common.publishAt') }}</span>
+                <span v-if="element.publishAt">{{ dateFormat(element.publishAt) }}</span>
+                <span v-else>-</span>
+              </div>
+            </div>
+
+            <div class="column is-1 is-size-6">
+              <button
+                v-if="hasEditorRole"
+                @click="deletePostGroupItem(element.postId)"
+                class="button is-small"
+              >
+                <span class="icon is-small">
+                  <i class="fas fa-trash"></i>
+                </span>
+              </button>
+            </div>
+          </div>
+        </template>
+      </draggable>
+    </div>
+    <div
+      v-else-if="isLoading === false"
+      class="mt-5"
+    >
+      <p>{{ $t('msg["Data is empty"]') }}</p>
+    </div>
+  </div>
+</template>
+<script>
+import draggable from 'vuedraggable'
+import { Admin } from '@/api'
+import EbDropdown from '@/components/molecules/EbDropdown'
+import BModal from '@/components/molecules/BModal'
+import EbDialog from '@/components/molecules/EbDialog'
+import EbModal from '@/components/molecules/EbModal'
+import PostList from '@/components/organisms/PostList'
+import { siteMixin } from '@/mixins/site'
+
+export default {
+  mixins: [siteMixin],
+
+  components: {
+    draggable,
+    EbDropdown,
+    BModal,
+    EbDialog,
+    EbModal,
+    PostList
+  },
+
+  data() {
+    return {
+      postGroup: null,
+      groupItems: [],
+      isPostModalActive: false,
+      isConfirmDeleteDialogActive: false
+    }
+  },
+
+  computed: {
+    serviceId() {
+      return this.$route.params.serviceId
+    },
+
+    isLoading() {
+      return this.$store.state.isLoading
+    },
+
+    postGroupLabel() {
+      return this.postGroup.label
+    },
+
+    slug() {
+      return this.$route.params.slug
+    },
+
+    postIds() {
+      if (this.checkEmpty(this.groupItems) === true) return []
+      return this.groupItems.map((item) => item.postId)
+    }
+  },
+
+  async created() {
+    await this.setPostGroup()
+  },
+
+  methods: {
+    async setPostGroup() {
+      try {
+        this.$store.dispatch('setLoading', true)
+        const params = { withPostDetail: 1 }
+        this.postGroup = await Admin.getPostGroups(
+          this.serviceId,
+          this.slug,
+          params,
+          this.adminUserToken
+        )
+        this.groupItems = this.postGroup.posts
+        this.$store.dispatch('setLoading', false)
+      } catch (err) {
+        this.debugOutput(err)
+        this.$store.dispatch('setLoading', false)
+        this.handleApiError(err, this.$t('msg["Failed to get data from server"]'))
+      }
+    },
+
+    async addGroupItem(post) {
+      if (this.postIds.includes(post.postId)) {
+        this.showGlobalMessage(this.$t('msg.AlreadySet'))
+        return
+      }
+      this.groupItems.push(post)
+      await this.updatePostGroup()
+      this.isPostModalActive = false
+    },
+
+    async deletePostGroupItem(postId) {
+      const index = this.groupItems.findIndex((item) => item.postId === postId)
+      this.groupItems.splice(index, 1)
+      await this.updatePostGroup()
+    },
+
+    async updatePostGroup() {
+      try {
+        this.$store.dispatch('setLoading', true)
+        const vals = { postIds: this.postIds }
+        await Admin.updatePostGroup(this.serviceId, this.slug, vals, this.adminUserToken)
+        this.$store.dispatch('setLoading', false)
+      } catch (err) {
+        this.debugOutput(err)
+        this.$store.dispatch('setLoading', false)
+        this.handleApiError(err, this.$t(`msg["Delete failed"]`))
+      }
+    },
+
+    async deletePostGroup() {
+      try {
+        this.$store.dispatch('setLoading', true)
+        await Admin.deletePostGroup(this.serviceId, this.slug, this.adminUserToken)
+        this.$emit('deleted', this.slug)
+        this.isConfirmDeleteDialogActive = false
+        this.$store.dispatch('setLoading', false)
+        this.$router.push(`/admin/posts/${this.serviceId}/groups`)
+      } catch (err) {
+        this.debugOutput(err)
+        this.$store.dispatch('setLoading', false)
+        if (this.checkResponseHasErrorMessage(err, true)) {
+          this.setErrors(err.response.data.errors)
+        }
+        this.handleApiError(err, this.$t(`msg["Delete failed"]`))
+      }
+    }
+  }
+}
+</script>

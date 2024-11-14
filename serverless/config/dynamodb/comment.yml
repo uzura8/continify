@@ -1,0 +1,76 @@
+Type: 'AWS::DynamoDB::Table'
+Properties:
+  TableName: ${self:custom.prjPrefix}-comment
+  AttributeDefinitions:
+    -
+      AttributeName: serviceIdContentId
+      AttributeType: S
+    -
+      AttributeName: commentId
+      AttributeType: S
+    -
+      AttributeName: serviceId
+      AttributeType: S
+    -
+      AttributeName: statusCreatedAt
+      AttributeType: S
+    -
+      AttributeName: createdAt
+      AttributeType: S
+  KeySchema:
+    -
+      AttributeName: commentId
+      KeyType: HASH
+
+  BillingMode: ${self:custom.dynamodbConfig.comment.billingMode}
+  ProvisionedThroughput:
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.comment.provisionedThroughput.readCapacityUnits}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.comment.provisionedThroughput.writeCapacityUnits}
+
+  Tags:
+    - Key: backup
+      Value: ${self:custom.dynamoDbBackupTargetTagValue}
+
+  GlobalSecondaryIndexes:
+    -
+      IndexName: commentStatusCreatedAtGsi
+      KeySchema:
+      -
+        AttributeName: serviceIdContentId
+        KeyType: HASH
+      -
+        AttributeName: statusCreatedAt
+        KeyType: RANGE
+      Projection:
+        ProjectionType: ALL
+        #NonKeyAttributes:
+        #  - commentId
+        #  - serviceId
+        #  - contentId
+        #  - body
+        #  - createdAt
+        #  - updatedAt
+        #  - publishStatus
+        #  - profiles
+        #ProjectionType: INCLUDE
+    -
+      IndexName: commentCreatedAtGsi
+      KeySchema:
+      -
+        AttributeName: serviceId
+        KeyType: HASH
+      -
+        AttributeName: createdAt
+        KeyType: RANGE
+      Projection:
+        ProjectionType: ALL
+        #NonKeyAttributes:
+        #  - commentId
+        #  - serviceId
+        #  - contentId
+        #  - body
+        #  - createdAt
+        #  - updatedAt
+        #  - publishStatus
+        #  - profiles
+        #ProjectionType: INCLUDE

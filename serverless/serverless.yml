@@ -1,0 +1,300 @@
+service: ${file(./config/stages/common.yml):service}
+
+frameworkVersion: "3"
+
+plugins:
+  - serverless-deployment-bucket
+  - serverless-python-requirements
+  - serverless-wsgi
+  - serverless-dynamodb-local
+  - serverless-prune-plugin
+  - serverless-domain-manager
+  - serverless-api-gateway-throttling
+  - serverless-plugin-lambda-insights
+  - serverless-plugin-aws-alerts
+  - serverless-associate-waf
+  - serverless-plugin-ifelse
+
+custom:
+  defaultStage: dev
+  prjPrefix: ${self:service}-${self:provider.stage}
+  stageConfigFileName: ./config/stages/${self:provider.stage}.yml
+  dynamoDbBackupTargetTagValue: ${file(${self:custom.stageConfigFileName}):dynamoDbBackupTargetTagValue}
+  mediaS3BucketName: ${file(${self:custom.stageConfigFileName}):mediaS3BucketName}
+  mediaDistributionId: ${file(${self:custom.stageConfigFileName}):mediaDistributionId}
+  commentImportS3BucketName: ${file(${self:custom.stageConfigFileName}):commentImportS3BucketName}
+  commentImportS3BucketPath: ${file(${self:custom.stageConfigFileName}):commentImportS3BucketPath}
+  awsAccountId: ${file(./config/stages/common.yml):awsAccountId}
+  cognitoRegion: ${file(${self:custom.stageConfigFileName}):cognitoRegion}
+  cognitoUserpoolId: ${file(${self:custom.stageConfigFileName}):cognitoUserpoolId}
+  dynamodbConfig: ${file(${self:custom.stageConfigFileName}):dynamodbConfig}
+  wsgi:
+    app: app/handler.app
+    packRequirements: false
+    pythonBin: python3
+  pythonRequirements:
+    dockerizePip: true
+    layer: true
+  deploymentBucket:
+    versioning: true
+    accelerate: true
+    blockPublicAccess: true
+  dynamodb:
+    start:
+      port: 8000
+      migrate: true
+      docker: true
+      noStart: true
+    stages:
+      - dev
+  prune:
+    automatic: true
+    number: 5
+  customDomain:
+    domainName: ${file(${self:custom.stageConfigFileName}):domainName}
+    stage: ${self:provider.stage}
+    basePath: "api"
+    certificateName: ${self:custom.customDomain.domainName}
+    createRoute53Record: true
+    endpointType: "regional"
+    securityPolicy: tls_1_2
+  apiGatewayThrottling:
+    maxRequestsPerSecond: 100
+    maxConcurrentRequests: 100
+  lambdaInsights:
+    defaultLambdaInsights: true #enables Lambda Insights for all functions
+  alerts:
+    stages:
+      - prd
+    dashboards: true
+    topics:
+      alarm:
+        topic: ${self:custom.prjPrefix}-alerts-alarm
+        notifications:
+          - protocol: email
+            endpoint: ${file(${self:custom.stageConfigFileName}):notificationEmail}
+      #ok:
+      #  topic: ${self:custom.prjPrefix}-alerts-ok
+    alarms:
+      - functionErrors
+      - functionThrottles
+    definitions:
+      functionErrors:
+        period: 60
+  associateWaf:
+    name: ${file(${self:custom.stageConfigFileName}):wafName}
+    version: V2 #(optional) Regional | V2
+  serverlessIfElse:
+    - If: ${file(${self:custom.stageConfigFileName}):excludeFunctions}
+      Exclude: ${file(${self:custom.stageConfigFileName}):excludeFunctions}
+
+provider:
+  name: aws
+  runtime: python3.10
+  stage: ${opt:stage, self:custom.defaultStage}
+  region: ${file(./config/stages/common.yml):defaultRegion}
+  endpointType: REGIONAL
+  stackTags:
+    deployedBy: serverless-gp-cms
+    projectName: ${self:custom.prjPrefix}
+  iam:
+    role:
+      statements: ${file(./config/iam-role-statements.yml)}
+  deploymentBucket:
+    name: ${file(./config/stages/common.yml):deploymentBucketName}
+    serverSideEncryption: AES256
+  logs:
+    restApi:
+      accessLogging: ${file(${self:custom.stageConfigFileName}):logsRestApiAccessLogging}
+      executionLogging: ${file(${self:custom.stageConfigFileName}):logsRestApiExecutionLogging}
+      format: '{ "requestTime":"$context.requestTime", "requestId":"$context.requestId", "httpMethod":"$context.httpMethod", "path":"$context.path", "resourcePath":"$context.resourcePath", "status":"$context.status", "protocol":"$context.protocol", "responseLength":"$context.responseLength", "sourceIp":"$context.identity.sourceIp" }'
+      level: ${file(${self:custom.stageConfigFileName}):logsRestApiLevel}
+      fullExecutionData: ${file(${self:custom.stageConfigFileName}):logsRestApiFullExecutionData}
+  logRetentionInDays: 14
+  environment:
+    PRJ_PREFIX: ${self:custom.prjPrefix}
+    APP_ROOT: /${self:custom.customDomain.basePath}
+    CORS_ACCEPT_ORIGINS: ${file(${self:custom.stageConfigFileName}):corsAcceptOrigins}
+    DEBUG_LOG_ENABLED: ${file(${self:custom.stageConfigFileName}):debugLogEnabled}
+    MEDIA_S3_BUCKET_NAME: ${self:custom.mediaS3BucketName}
+    MEDIA_DISTRIBUTION_ID: ${self:custom.mediaDistributionId}
+    MEDIA_IMAGE_MAKER_FILE_SIZE_LIMIT: ${file(${self:custom.stageConfigFileName}):mediaImageMakerFileSizeLimit}
+    MEDIA_UNUSED_FILES_CLEANER_RESERVED_FILE_EXPIRATION_HOURS: ${file(${self:custom.stageConfigFileName}):mediaUnusedFilesCleanerReservedFileExpirationHours}
+    RECAPTCHA_SITE_KEY: ${file(${self:custom.stageConfigFileName}):recaptcha.siteKey}
+    RECAPTCHA_SECRET_KEY: ${file(${self:custom.stageConfigFileName}):recaptcha.secretKey}
+    URL_SHORTEN_BASE_URL: ${file(${self:custom.stageConfigFileName}):urlShortenBaseUrl}
+    COMMENT_IMPORTER_COLUMN_CONVERSION_TABLE: ${file(./config/stages/common.yml):commentImporterColumnConversionTable}
+    COMMENT_IMPORTER_CONTENT_LIST: ${file(./config/stages/common.yml):commentImporterContentList}
+    COMMENT_IMPORTER_SIZE_LIMIT: ${file(${self:custom.stageConfigFileName}):commentImportS3BucketSizeLimit}
+    COMMENT_IMPORTER_ROWS_COUNT_LIMIT: ${file(${self:custom.stageConfigFileName}):commentImportCsvRowsCountLimit}
+    COMMENT_IMPORTER_NOTICE_EMAILS: ${file(${self:custom.stageConfigFileName}):commentImporterNoticeEmails}
+    SES_REGION: ${file(./config/stages/common.yml):sesRegion}
+    COGNITO_REGION: ${file(${self:custom.stageConfigFileName}):cognitoRegion}
+    COGNITO_USERPOOL_ID: ${self:custom.cognitoUserpoolId}
+    COGNITO_APP_CLIENT_ID: ${file(${self:custom.stageConfigFileName}):cognitoAppClientId}
+    COGNITO_CHECK_TOKEN_EXPIRATION: ${file(${self:custom.stageConfigFileName}):cognitoCheckTokenExpiration}
+    COGNITO_JWT_HEADER_NAME: ${file(./config/stages/common.yml):cognitoJwtHeaderName}
+    COGNITO_JWT_HEADER_PREFIX: ${file(./config/stages/common.yml):cognitoJwtHeaderPrefix}
+    COMMENT_DEFAULT_PUBLISH_STATUS: ${file(${self:custom.stageConfigFileName}):commentDefaultPublishStatus}
+
+package:
+  exclude:
+    - node_modules/**
+    - config/stages-sample/**
+    - config-bkup_*
+    - LICENSE
+    - README.md
+    - tags
+    - .venv/**
+    - __pycache__
+    - package-lock.json
+    - .DS_Store
+    - .babelrc
+    - .browserslistrc
+    - .dynamodb/**
+    - .eslintrc.js
+    - .git/**
+    - .gitignore
+    - .github/**
+    - .prettierrc.json
+    - src/**
+    - public/**
+    - webpackConfigs/**
+    - develop/**
+    - app/bin/**
+    - terraform/**
+
+functions:
+  api:
+    handler: wsgi_handler.handler
+    name: ${self:service}-${self:provider.stage}-api
+    layers:
+      - { Ref: PythonRequirementsLambdaLayer }
+    memorySize: ${file(${self:custom.stageConfigFileName}):appMemorySize}
+    events:
+      - http: ANY /
+      - http: ANY /{proxy+}
+    timeout: ${file(${self:custom.stageConfigFileName}):appTimeout}
+    provisionedConcurrency: ${file(${self:custom.stageConfigFileName}):appProvisionedConcurrency}
+
+  mediaImageMaker:
+    handler: app/media_image_maker_handler.handler
+    name: ${self:service}-${self:provider.stage}-mediaImageMaker
+    layers:
+      - { Ref: PythonRequirementsLambdaLayer }
+    memorySize: ${file(${self:custom.stageConfigFileName}):mediaImageMakerMemorySize}
+    timeout: ${file(${self:custom.stageConfigFileName}):mediaImageMakerTimeout}
+    events:
+      - s3:
+          bucket: ${self:custom.mediaS3BucketName}
+          event: s3:ObjectCreated:*
+          #rules:
+          #  #- prefix: /
+          #  #- suffix: .jpg
+          existing: true # If use existing bucket, set true
+          #forceDeploy: true
+
+  mediaUnusedFilesCleaner:
+    handler: app/media_unused_files_cleaner_handler.handler
+    name: ${self:service}-${self:provider.stage}-mediaUnusedFilesCleaner
+    layers:
+      - { Ref: PythonRequirementsLambdaLayer }
+    memorySize: ${file(${self:custom.stageConfigFileName}):mediaUnusedFilesCleanerMemorySize}
+    timeout: ${file(${self:custom.stageConfigFileName}):mediaUnusedFilesCleanerTimeout}
+    events:
+      - schedule: ${file(${self:custom.stageConfigFileName}):mediaUnusedFilesCleanerEventSchedule}
+
+  postDetailJsonGenerator:
+    handler: app/post_detail_json_generator.handler
+    name: ${self:service}-${self:provider.stage}-postDetailJsonGenerator
+    layers:
+      - { Ref: PythonRequirementsLambdaLayer }
+    memorySize: ${file(${self:custom.stageConfigFileName}):postDetailJsonGeneratorMemorySize}
+    timeout: ${file(${self:custom.stageConfigFileName}):postDetailJsonGeneratorTimeout}
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - PostDynamoDBTable
+              - StreamArn
+
+  postStatusUpdater:
+    handler: app/post_status_updater.handler
+    name: ${self:service}-${self:provider.stage}-postStatusUpdater
+    layers:
+      - { Ref: PythonRequirementsLambdaLayer }
+    memorySize: ${file(${self:custom.stageConfigFileName}):postStatusUpdater.memorySize}
+    timeout: ${file(${self:custom.stageConfigFileName}):postStatusUpdater.timeout}
+    events:
+      - schedule: ${file(${self:custom.stageConfigFileName}):postStatusUpdater.eventSchedule}
+
+  #mediaImageModifier:
+  #  handler: app/media_image_modifier_handler.handler
+  #  name: ${self:service}-${self:provider.stage}-mediaImageModifier
+  #  layers:
+  #    - arn:aws:lambda:ap-northeast-1:770693421928:layer:Klayers-p310-Pillow:2 # Ref https://github.com/keithrozario/Klayers/tree/master/deployments
+  #  memorySize: ${file(${self:custom.stageConfigFileName}):mediaImageMakerMemorySize}
+  #  timeout: ${file(${self:custom.stageConfigFileName}):mediaImageMakerTimeout}
+
+  urlShortenQrcodeMaker:
+    handler: app/url_shorten_qrcode_maker.handler
+    name: ${self:service}-${self:provider.stage}-urlShortenQrcodeMaker
+    layers:
+      - { Ref: PythonRequirementsLambdaLayer }
+    memorySize: ${file(${self:custom.stageConfigFileName}):urlShortenQrcodeMakerMemorySize}
+    timeout: ${file(${self:custom.stageConfigFileName}):urlShortenQrcodeMakerTimeout}
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - ShortenUrlDynamoDBTable
+              - StreamArn
+
+  commentImporter:
+    handler: app/comment_importer.handler
+    name: ${self:service}-${self:provider.stage}-commentImporter
+    layers:
+      - { Ref: PythonRequirementsLambdaLayer }
+    memorySize: ${file(${self:custom.stageConfigFileName}):commentImportMemorySize}
+    timeout: ${file(${self:custom.stageConfigFileName}):commentImportTimeout}
+    events:
+      - s3:
+          bucket: ${self:custom.commentImportS3BucketName}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: ${self:custom.commentImportS3BucketPath}/
+            - suffix: .csv
+          existing: true # If use existing bucket, set true
+          #forceDeploy: true
+
+  commentTruncater:
+    handler: app/comment_truncater.handler
+    name: ${self:service}-${self:provider.stage}-commentTruncater
+    layers:
+      - { Ref: PythonRequirementsLambdaLayer }
+    memorySize: ${file(${self:custom.stageConfigFileName}):commentImportMemorySize}
+    timeout: ${file(${self:custom.stageConfigFileName}):commentImportTimeout}
+    maximumRetryAttempts: 1
+
+resources:
+  Resources:
+    SiteConfigDynamoDBTable: ${file(./config/dynamodb/site-config.yml)}
+    ServiceDynamoDBTable: ${file(./config/dynamodb/service.yml)}
+    ServiceConfigDynamoDBTable: ${file(./config/dynamodb/service-config.yml)}
+    ServiceContentDynamoDBTable: ${file(./config/dynamodb/service-content.yml)}
+    AdminUserConfigDynamoDBTable: ${file(./config/dynamodb/admin-user-config.yml)}
+    CategoryDynamoDBTable: ${file(./config/dynamodb/category.yml)}
+    PostDynamoDBTable: ${file(./config/dynamodb/post.yml)}
+    PostGroupDynamoDBTable: ${file(./config/dynamodb/post-group.yml)}
+    CommentDynamoDBTable: ${file(./config/dynamodb/comment.yml)}
+    CommentCountDynamoDBTable: ${file(./config/dynamodb/comment-count.yml)}
+    TagDynamoDBTable: ${file(./config/dynamodb/tag.yml)}
+    PostTagDynamoDBTable: ${file(./config/dynamodb/post-tag.yml)}
+    FileDynamoDBTable: ${file(./config/dynamodb/file.yml)}
+    ShortenUrlDynamoDBTable: ${file(./config/dynamodb/shorten-url.yml)}
+    ShortenUrlDomainDynamoDBTable: ${file(./config/dynamodb/shorten-url-domain.yml)}
+    VoteCountDynamoDBTable: ${file(./config/dynamodb/vote-count.yml)}
+    VoteLogDynamoDBTable: ${file(./config/dynamodb/vote-log.yml)}
+    ContactDynamoDBTable: ${file(./config/dynamodb/contact.yml)}

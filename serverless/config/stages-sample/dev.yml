@@ -1,0 +1,148 @@
+domainName: your-project-api-dev.example.com
+corsAcceptOrigins: ""
+notificationEmail: admin-dev@example.com
+logsRestApiAccessLogging: true # Optional configuration which enables or disables access logging. Defaults to true.
+logsRestApiExecutionLogging: true # Optional configuration which enables or disables execution logging. Defaults to true.
+logsRestApiLevel: INFO # Optional configuration which specifies the log level to use for execution logging. May be set to either INFO or ERROR.
+logsRestApiFullExecutionData: true # Optional configuration which specifies whether or not to log full requests/responses for execution logging. Defaults to true.
+debugLogEnabled: true
+
+wafName: none # If use WAF, set existing Web ACL name. If set not existing name, ignore this.
+
+appMemorySize: 128 # MB
+appTimeout: 20 # s
+appProvisionedConcurrency: 2
+
+mediaS3BucketName: "media-dev.example.com"
+mediaDistributionId: "EXXXXXXXXXXXXXX"
+mediaImageMakerMemorySize: 256 # MB
+mediaImageMakerTimeout: 600 # s
+mediaImageMakerFileSizeLimit: 20 # MB
+
+mediaUnusedFilesCleanerMemorySize: 128 # MB
+mediaUnusedFilesCleanerTimeout: 600 # s
+mediaUnusedFilesCleanerReservedFileExpirationHours: 24 # Hours
+mediaUnusedFilesCleanerEventSchedule: rate(1 day)
+
+postDetailJsonGeneratorMemorySize: 128 # MB
+postDetailJsonGeneratorTimeout: 300 # s
+
+postStatusUpdater:
+  memorySize: 128 # MB
+  timeout: 600 # s
+  eventSchedule: "cron(0/5 * * * ? *)" # Every 5 minutes
+
+recaptcha:
+  siteKey: ""
+  secretKey: ""
+
+urlShortenQrcodeMakerMemorySize: 128 # MB
+urlShortenQrcodeMakerTimeout: 300 # s
+urlShortenBaseUrl: "https://rd-dev.example.com/"
+
+commentDefaultPublishStatus: "unpublish"
+commentImportTimeout: 600 # s
+commentImportMemorySize: 256 # MB
+commentImportS3BucketName: "your-content-resources"
+commentImportS3BucketPath: "your-project/dev/comments"
+commentImportS3BucketSizeLimit: 10 # MB
+commentImportCsvRowsCountLimit: 1000 # Stop execution to import comments from csv, if run over this value
+commentImporterNoticeEmails: '{"hoge": {"to":"admin@example.com", "from":"admin@example.com", "from_name":"System Administrator"}}'
+
+# For Admin Console
+cognitoRegion: "ap-northeast-1"
+cognitoUserpoolId: "ap-northeast-1_*********"
+cognitoAppClientId: "**************************"
+cognitoCheckTokenExpiration: True # If set Falsae, disable token expiration checking for testing purposes
+
+excludeFunctions:
+  #- functions.mediaUnusedFilesCleaner
+  - functions.mediaImageModifier
+  - functions.urlShortenQrcodeMaker
+  - functions.commentImporter
+  - functions.commentTruncater
+# excludeFunctions: [] # If not set exclude
+
+dynamoDbBackupTargetTagValue: "none" # 'aws-backup':backup target / other value: not target
+
+dynamodbConfig:
+  siteConfig:
+    billingMode: "PAY_PER_REQUEST" # Select 'PAY_PER_REQUEST' or 'PROVISIONED'
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  service:
+    billingMode: "PAY_PER_REQUEST"
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  serviceConfig:
+    billingMode: "PAY_PER_REQUEST"
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  adminUserConfig:
+    billingMode: "PAY_PER_REQUEST"
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  category:
+    billingMode: "PAY_PER_REQUEST"
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  post:
+    billingMode: "PAY_PER_REQUEST"
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  postGroup:
+    billingMode: "PAY_PER_REQUEST"
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  comment:
+    billingMode: "PAY_PER_REQUEST"
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  commentCount:
+    billingMode: "PAY_PER_REQUEST"
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  tag:
+    billingMode: "PAY_PER_REQUEST"
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  postTag:
+    billingMode: "PAY_PER_REQUEST"
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  file:
+    billingMode: "PAY_PER_REQUEST"
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  shortenUrl:
+    billingMode: "PAY_PER_REQUEST"
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  shortenUrlDomain:
+    billingMode: "PAY_PER_REQUEST"
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  voteCount:
+    billingMode: "PAY_PER_REQUEST"
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  voteLog:
+    billingMode: "PAY_PER_REQUEST"
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0

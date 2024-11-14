@@ -1,0 +1,13 @@
+# config
+/src/config/config.json
+/src/config/cognito-client-config.json
+/src/config/config-prd.json
+/src/config/config-dev.json
+/src/config/config-local.json
+/src/config/config-bkup*.json
+/src/config/serviceConfig.json
+/src/config/trackingParameters.json
+
+# public
+/public/*
+

@@ -1,0 +1,72 @@
+{
+  "hoge": {
+    "richTextEditorOptions": {
+      "forced_root_block": "p",
+      "menubar": "file edit view insert format tools table help",
+      "menu": {
+        "file": {
+          "title": "File",
+          "items": "newdocument | preview"
+        },
+        "edit": {
+          "title": "Edit",
+          "items": "undo redo | cut copy paste pastetext | selectall"
+        },
+        "view": {
+          "title": "View",
+          "items": "code | visualaid visualblocks | preview fullscreen"
+        },
+        "insert": {
+          "title": "Insert",
+          "items": "link inserttable | emoticons hr | anchor"
+        },
+        "format": {
+          "title": "Format",
+          "items": "bold italic underline strikethrough superscript subscript codeformat | styles blocks fontfamily fontsize align lineheight | forecolor backcolor | language | removeformat"
+        },
+        "tools": {
+          "title": "Tools",
+          "items": "code wordcount"
+        },
+        "table": {
+          "title": "Table",
+          "items": "inserttable | cell row column | advtablesort | tableprops deletetable"
+        },
+        "help": {
+          "title": "Help",
+          "items": "help"
+        }
+      },
+      "toolbar": [
+        {
+          "name": "history",
+          "items": ["undo", "redo"]
+        },
+        {
+          "name": "formatting",
+          "items": ["bold", "italic", "backcolor", "forecolor", "removeformat"]
+        },
+        {
+          "name": "alignment",
+          "items": ["alignleft", "aligncenter", "alignright", "alignjustify"]
+        },
+        {
+          "name": "lists",
+          "items": ["bullist", "numlist"]
+        },
+        {
+          "name": "indentation",
+          "items": ["outdent", "indent"]
+        },
+        {
+          "name": "insert",
+          "items": ["hr", "table", "link", "anchor", "emoticons"]
+        },
+        {
+          "name": "tools",
+          "items": ["visualblocks", "code", "fullscreen", "preview", "help"]
+        }
+      ]
+    }
+  }
+}

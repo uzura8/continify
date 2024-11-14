@@ -1,0 +1,44 @@
+Type: 'AWS::DynamoDB::Table'
+Properties:
+  TableName: ${self:custom.prjPrefix}-file
+  AttributeDefinitions:
+    -
+      AttributeName: fileId
+      AttributeType: S
+    -
+      AttributeName: fileStatus
+      AttributeType: S
+    -
+      AttributeName: createdAt
+      AttributeType: S
+  KeySchema:
+    -
+      AttributeName: fileId
+      KeyType: HASH
+
+  BillingMode: ${self:custom.dynamodbConfig.file.billingMode}
+  ProvisionedThroughput:
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.file.provisionedThroughput.readCapacityUnits}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.file.provisionedThroughput.writeCapacityUnits}
+
+  Tags:
+    - Key: backup
+      Value: ${self:custom.dynamoDbBackupTargetTagValue}
+
+  GlobalSecondaryIndexes:
+    -
+      IndexName: fileStatusCreatedAtGsi
+      KeySchema:
+      -
+        AttributeName: fileStatus
+        KeyType: HASH
+      -
+        AttributeName: createdAt
+        KeyType: RANGE
+      Projection:
+        NonKeyAttributes:
+          - fileId
+          - fileType
+          - serviceId
+          - mimeType
+        ProjectionType: INCLUDE

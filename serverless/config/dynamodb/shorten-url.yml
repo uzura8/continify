@@ -1,0 +1,75 @@
+Type: "AWS::DynamoDB::Table"
+Properties:
+  TableName: ${self:custom.prjPrefix}-shorten-url
+  AttributeDefinitions:
+    - AttributeName: urlId
+      AttributeType: S
+    - AttributeName: serviceId
+      AttributeType: S
+    - AttributeName: createdAt
+      AttributeType: S
+    - AttributeName: serviceIdDomain
+      AttributeType: S
+    - AttributeName: serviceSeqNumber
+      AttributeType: N
+    - AttributeName: confirmStatusCreatedAt
+      AttributeType: S
+    - AttributeName: urlCreatedAt
+      AttributeType: S
+  KeySchema:
+    - AttributeName: urlId
+      KeyType: HASH
+
+  BillingMode: ${self:custom.dynamodbConfig.shortenUrl.billingMode}
+  ProvisionedThroughput:
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.shortenUrl.provisionedThroughput.readCapacityUnits}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.shortenUrl.provisionedThroughput.writeCapacityUnits}
+
+  Tags:
+    - Key: backup
+      Value: ${self:custom.dynamoDbBackupTargetTagValue}
+
+  StreamSpecification:
+    StreamViewType: NEW_IMAGE
+
+  GlobalSecondaryIndexes:
+    - IndexName: createdAtGsi
+      KeySchema:
+        - AttributeName: serviceId
+          KeyType: HASH
+        - AttributeName: createdAt
+          KeyType: RANGE
+      Projection:
+        ProjectionType: ALL
+    - IndexName: serviceIdDomainIndex
+      KeySchema:
+        - AttributeName: serviceIdDomain
+          KeyType: HASH
+        - AttributeName: createdAt
+          KeyType: RANGE
+      Projection:
+        ProjectionType: ALL
+    - IndexName: ServiceSeqNumberIndex
+      KeySchema:
+        - AttributeName: serviceId
+          KeyType: HASH
+        - AttributeName: serviceSeqNumber
+          KeyType: RANGE
+      Projection:
+        ProjectionType: ALL
+    - IndexName: ServiceStatusIndex
+      KeySchema:
+        - AttributeName: serviceId
+          KeyType: HASH
+        - AttributeName: confirmStatusCreatedAt
+          KeyType: RANGE
+      Projection:
+        ProjectionType: ALL
+    - IndexName: ServiceUrlIndex
+      KeySchema:
+        - AttributeName: serviceId
+          KeyType: HASH
+        - AttributeName: urlCreatedAt
+          KeyType: RANGE
+      Projection:
+        ProjectionType: ALL

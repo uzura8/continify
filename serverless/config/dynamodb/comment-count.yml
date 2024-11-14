@@ -1,0 +1,42 @@
+Type: 'AWS::DynamoDB::Table'
+Properties:
+  TableName: ${self:custom.prjPrefix}-comment-count
+  AttributeDefinitions:
+    -
+      AttributeName: serviceId
+      AttributeType: S
+    -
+      AttributeName: contentId
+      AttributeType: S
+    -
+      AttributeName: contentIdPublishStatus
+      AttributeType: S
+  KeySchema:
+    -
+      AttributeName: serviceId
+      KeyType: HASH
+    -
+      AttributeName: contentIdPublishStatus
+      KeyType: RANGE
+
+  BillingMode: ${self:custom.dynamodbConfig.commentCount.billingMode}
+  ProvisionedThroughput:
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.commentCount.provisionedThroughput.readCapacityUnits}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.commentCount.provisionedThroughput.writeCapacityUnits}
+
+  Tags:
+    - Key: backup
+      Value: ${self:custom.dynamoDbBackupTargetTagValue}
+
+  LocalSecondaryIndexes:
+    -
+      IndexName: ServiceIdContentIdLsi
+      KeySchema:
+      -
+        AttributeName: serviceId
+        KeyType: HASH
+      -
+        AttributeName: contentId
+        KeyType: RANGE
+      Projection:
+        ProjectionType: ALL

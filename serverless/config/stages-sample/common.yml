@@ -1,0 +1,11 @@
+service: 'your-project'
+awsAccountId: 'Your-AWS-Acconnt-ID'
+defaultRegion: 'ap-northeast-1'
+deploymentBucketName: 'your-deployment'
+cognitoJwtHeaderName: 'Authorization'
+cognitoJwtHeaderPrefix: 'Bearer'
+
+sesRegion: 'us-west-2'
+
+commentImporterColumnConversionTable: '{"hoge": {"Created Time":"createdAt", "Comment":"body", "Handle Name":"profiles:nickname", "Ages":"profiles:age", "Comment ID":"localId", "Browser":"ua", "IP Address":"ip", "Unpublish Flag":"unpublish"}}'
+commentImporterContentList: '{"hoge": [{"id":"content001", "label":"Content1"}, {"id":"content002", "label":"Content2"}]}'
