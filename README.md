@@ -1,13 +1,48 @@
-# Serverless-CMS
+# MicroPress
 
-Constructed by
+**Headless CMS with Serverless Architecture**
+
+With a client-side application, you can build unlimited blogs effortlessly using just MicroPress.
+
+## Features
+
+1. **Scalable Serverless Architecture**
+
+   - Powered by serverless technologies AWS Lambda Functions, ensuring high availability and scalability.
+
+2. **Flexible Frontend Integration**
+
+   - Seamlessly integrates with any frontend framework, such as React, or Vue.
+
+3. **Lightweight and Fast**
+
+   - API-based design minimizes overhead for a streamlined and efficient system.
+   - Optimized for performance to deliver a superior user experience.
+
+4. **Customizable Content Model**
+
+   - Editing and distribution are possible not only in HTML but also in JSON format.
+   - Extendable for blogs, portfolios, e-commerce, news sites, and more.
+
+5. **Cost-Efficient**
+
+   - Articles can be saved in JSON format to AWS S3, enabling highly available and fast content delivery.
+   - Pay-as-you-go serverless architecture keeps costs low, even with fluctuating traffic.
+
+6. **Multi-functional**
+   - Supports features such as comment distribution and likes.
+
+---
+
+## Architecture
 
 - Serverside:
   - Flask + Lambda + APIGateway (deploy by Serverless Framework)
   - DynamoDB
-- Frontend: VueJS
+- Frontend:
+  - Vue3 + Vite
 
-## Instration
+## Getting Started
 
 #### Preparation
 
@@ -17,8 +52,8 @@ You need below
   - aws-cli = 1.29.X
   - Terraform = 1.7.2
 - serverless
-  - nodeJS = 20.X
-  - Python = 3.10.X
+  - nodeJS = 22.X
+  - Python = 3.12.X
 - frontend
   - nodeJS = 20.X
 
@@ -29,7 +64,7 @@ Install python venv and terraform on mac
 ```bash
 # At project root dir
 cd (project_root/)serverless
-npm install serverless
+npm install
 python -m venv .venv
 ```
 
@@ -56,22 +91,13 @@ Install python packages
 pip install -r requirements.txt
 ```
 
-#### Use Contact component
-
-If use Contact component, execute bellow
-
-```bash
-. .venv/bin/activate
-pip install -r pytz Flask-WTF
-```
-
 ### Create IAM Policy and Atach to Role
 
 #### Create Role for Deployment
 
 - Create Role for deployment by AWS Console or aws-cli
 - name example: `prj-name-dev-deploy-tf-sls-role`
-- Set "信頼関係" as below
+- Set "Principal" as below
 
 ```json
 {
@@ -91,75 +117,6 @@ pip install -r pytz Flask-WTF
     }
   ]
 }
-```
-
-#### Set AWS Role for Create IAM Policy
-
-##### If use aws profile
-
-```bash
-export AWS_SDK_LOAD_CONFIG=1
-export AWS_PROFILE=your-aws-role-for-create-iam-policy
-export AWS_REGION="ap-northeast-1"
-```
-
-##### if use aws-vault
-
-```bash
-export AWS_REGION="ap-northeast-1"
-aws-vault exec your-aws-role-for-create-iam-policy
-```
-
-The role needs below policies
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "iam:GetPolicy",
-        "iam:CreatePolicy",
-        "iam:DeletePolicy",
-        "iam:CreatePolicyVersion",
-        "iam:DeletePolicyVersion",
-        "iam:SetDefaultPolicyVersion",
-        "iam:ListPolicyVersions",
-        "iam:GetPolicyVersion"
-      ],
-      "Resource": ["arn:aws:iam::your-account-number:policy/*"]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "iam:ListPolicies",
-        "iam:ListAttachedRolePolicies",
-        "iam:AttachRolePolicy",
-        "iam:DetachRolePolicy",
-        "iam:PutRolePolicy"
-      ],
-      "Resource": ["arn:aws:iam::your-account-number:role/*"]
-    }
-  ]
-}
-```
-
-#### Edit Terraform config file
-
-Copy sample file and edit variables for your env
-
-```bash
-cd (project_root_dir)/terraform-iam-role
-cp terraform.tfvars.sample terraform.tfvars
-vi terraform.tfvars
-```
-
-#### Execute terraform apply
-
-```bash
-terraform init -backend-config="region=ap-northeast-1" -backend-config="profile=your-aws-profile-name"
-terraform apply -auto-approve -var-file=./terraform.tfvars
 ```
 
 ## Deploy AWS Resources by Terraform
@@ -197,6 +154,9 @@ export AWS_REGION="ap-northeast-1"
 
 ##### if use aws-vault
 
+- Setup aws-vault with reference to section "For AWS VAULT" in this document
+- Execute below command
+
 ```bash
 export AWS_REGION="ap-northeast-1"
 aws-vault exec your-aws-role-for-deploy
@@ -213,7 +173,7 @@ terraform init -backend-config="bucket=your-deployment" -backend-config="key=ter
 #### 4. Execute terraform apply
 
 ```bash
-terraform apply -auto-approve -var-file=./terraform.tfvars
+terraform apply
 ```
 
 #### 5. Create Admin User
@@ -274,38 +234,9 @@ aws cognito-idp admin-set-user-password \
 ]
 ```
 
-## DynamoDB Backup Settings
-
-If you want to backup DynamoDB items, set bellows
-
-- Access to "AWS Backup" on AWS Console and set region
-- Press "Create backup plan"
-- Input as follows for "Plan"
-  - Start options
-    - Select "Build a new plan"
-    - Backup plan name: your-project-dynamodb-backup
-  - Backup rule configuration
-    - Backup vault: Default
-    - Backup rule name: your-project-dynamodb-backup-rule
-    - Backup frequency: Daily
-    - Backup window: Customize backup window
-    - Backup window settings: as you like
-  - Press "Create backup plan"
-- Input as follows for "Assign resources"
-  - General
-    - Resource assignment name: your-project-dynamodb-backup-assignment
-    - IAM role: Default role
-  - Resource selection
-    - 1. Define resource selection: Include specific resource types
-    - 2. Select specific resource types: DynamoDB
-      - Table names: All tables
-    - 4. Refine selection using tags
-      - Key: backup
-      - Condition for value: Eauqls
-      - Value: aws-backup
-  - Press "Assign resources"
-
 ## Deploy Server Side Resources
+
+If you want to backup DynamoDB items, refer to "DynamoDB Backup Settings" in this document
 
 ### Setup configs
 
@@ -389,7 +320,111 @@ vi src/config/cognito-client-config.json
 
 #### Upload S3 Bucket "your-serverless-configs/your-project-name/frontend/{stage}"
 
-#### Deploy continually on pushed to git
+#### Deploy Frontend
+
+Deploy frontend resources to S3 continually on pushed to git by GitHub Actions
+
+### For AWS VAULT
+
+#### Set AWS Role for Create IAM Policy
+
+##### If use aws profile
+
+```bash
+export AWS_SDK_LOAD_CONFIG=1
+export AWS_PROFILE=your-aws-role-for-create-iam-policy
+export AWS_REGION="ap-northeast-1"
+```
+
+##### if use aws-vault
+
+```bash
+export AWS_REGION="ap-northeast-1"
+aws-vault exec your-aws-role-for-create-iam-policy
+```
+
+The role needs below policies
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetPolicy",
+        "iam:CreatePolicy",
+        "iam:DeletePolicy",
+        "iam:CreatePolicyVersion",
+        "iam:DeletePolicyVersion",
+        "iam:SetDefaultPolicyVersion",
+        "iam:ListPolicyVersions",
+        "iam:GetPolicyVersion"
+      ],
+      "Resource": ["arn:aws:iam::your-account-number:policy/*"]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:ListPolicies",
+        "iam:ListAttachedRolePolicies",
+        "iam:AttachRolePolicy",
+        "iam:DetachRolePolicy",
+        "iam:PutRolePolicy"
+      ],
+      "Resource": ["arn:aws:iam::your-account-number:role/*"]
+    }
+  ]
+}
+```
+
+### DynamoDB Backup Settings
+
+If you want to backup DynamoDB items, set bellows
+
+- Access to "AWS Backup" on AWS Console and set region
+- Press "Create backup plan"
+- Input as follows for "Plan"
+  - Start options
+    - Select "Build a new plan"
+    - Backup plan name: your-project-dynamodb-backup
+  - Backup rule configuration
+    - Backup vault: Default
+    - Backup rule name: your-project-dynamodb-backup-rule
+    - Backup frequency: Daily
+    - Backup window: Customize backup window
+    - Backup window settings: as you like
+  - Press "Create backup plan"
+- Input as follows for "Assign resources"
+  - General
+    - Resource assignment name: your-project-dynamodb-backup-assignment
+    - IAM role: Default role
+  - Resource selection
+    - 1. Define resource selection: Include specific resource types
+    - 2. Select specific resource types: DynamoDB
+      - Table names: All tables
+    - 4. Refine selection using tags
+      - Key: backup
+      - Condition for value: Eauqls
+      - Value: aws-backup
+  - Press "Assign resources"
+
+#### Edit Terraform config file
+
+Copy sample file and edit variables for your env
+
+```bash
+cd (project_root_dir)/terraform-iam-role
+cp terraform.tfvars.sample terraform.tfvars
+vi terraform.tfvars
+```
+
+#### Execute terraform apply
+
+```bash
+terraform init -backend-config="region=ap-northeast-1" -backend-config="profile=your-aws-profile-name"
+terraform apply -auto-approve -var-file=./terraform.tfvars
+```
 
 ## Development
 
@@ -454,30 +489,6 @@ docker-compose stop
 ```bash
 cd (project_root/)serverless
 sls invoke local --function funcName --data param
-```
-
-### Convert existing DB records to DynamoDB
-
-Install packages for converter if use MySQL for convert target service
-
-```bash
-cd (project_root/)serverless
-. .venv/bin/activate
-pip install PyMySQL
-```
-
-Set converter of target service
-
-```bash
-cd (root/)serverless/develop/db_converter/services/
-git clone {repository url of target service converter}
-```
-
-Execute converter
-
-```bash
-cd (root/)serverless/develop/db_converter
-python main.py {service_name}
 ```
 
 ### Performance Test
