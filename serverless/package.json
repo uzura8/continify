@@ -15,7 +15,7 @@
     "serverless-associate-waf": "^1.2.1",
     "serverless-deployment-bucket": "^1.6.0",
     "serverless-domain-manager": "^7.3.6",
-    "serverless-dynamodb-local": "^1.0.2",
+    "serverless-dynamodb-local": "^0.2.40",
     "serverless-plugin-aws-alerts": "^1.7.5",
     "serverless-plugin-ifelse": "^1.0.7",
     "serverless-plugin-lambda-insights": "^2.0.0",
