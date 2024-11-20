@@ -289,42 +289,6 @@ export default [
         }
       },
       {
-        path: '/admin/shorten-urls/:serviceId/create',
-        name: 'AdminShortenUrlCreate',
-        component: () => import('@/templates/AdminShortenUrlCreate'),
-        meta: {
-          requiresAuth: true,
-          requiresAcceptService: true
-        }
-      },
-      {
-        path: '/admin/shorten-urls/:serviceId/:urlId/edit',
-        name: 'AdminShortenUrlEdit',
-        component: () => import('@/templates/AdminShortenUrlEdit'),
-        meta: {
-          requiresAuth: true,
-          requiresAcceptService: true
-        }
-      },
-      {
-        path: '/admin/shorten-urls/:serviceId/:urlId',
-        name: 'AdminShortenUrl',
-        component: () => import('@/templates/AdminShortenUrl'),
-        meta: {
-          requiresAuth: true,
-          requiresAcceptService: true
-        }
-      },
-      {
-        path: '/admin/shorten-urls/:serviceId',
-        name: 'AdminShortenUrls',
-        component: () => import('@/templates/AdminShortenUrls'),
-        meta: {
-          requiresAuth: true,
-          requiresAcceptService: true
-        }
-      },
-      {
         path: '/admin',
         name: 'AdminTop',
         component: () => import('@/templates/AdminTop'),

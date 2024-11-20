@@ -96,21 +96,6 @@ export default {
     return state.adminPostsPager.keys.length
   },
 
-  adminShortenUrlsPagerQueryCurrent: state => () => {
-    let params = {
-      url: state.adminShortenUrlsPager.url,
-      status: state.adminShortenUrlsPager.status,
-    }
-    if (state.adminShortenUrlsPager.lastIndex != null) {
-      params.index = state.adminShortenUrlsPager.lastIndex
-    }
-    return params
-  },
-
-  adminShortenUrlsPagerIndexCount: state => () => {
-    return state.adminShortenUrlsPager.keys.length
-  },
-
   //userInfo: state => (key) => {
   //  const acceptKey = [
   //    'uid', 'name', 'email', 'photoURL'

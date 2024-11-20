@@ -94,9 +94,6 @@ export default {
         case 'post':
           path = 'posts'
           break
-        case 'urlShortener':
-          path = 'shorten-urls'
-          break
         case 'comment':
           path = 'comments'
           break

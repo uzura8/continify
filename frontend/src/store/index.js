@@ -36,12 +36,6 @@ const store = createStore({
         },
         category: '',
       },
-      adminShortenUrlsPager: {
-        keys: [],
-        lastIndex: 0,
-        url: '',
-        status: '',
-      }
     }
   },
   getters,

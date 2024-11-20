@@ -18,8 +18,8 @@ Properties:
 
   BillingMode: ${self:custom.dynamodbConfig.voteLog.billingMode, 'PAY_PER_REQUEST'}
   ProvisionedThroughput:
-    ReadCapacityUnits: ${self:custom.dynamodbConfig.voteLog.provisionedThroughput.readCapacityUnits}
-    WriteCapacityUnits: ${self:custom.dynamodbConfig.voteLog.provisionedThroughput.writeCapacityUnits}
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.voteLog.provisionedThroughput.readCapacityUnits, 0}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.voteLog.provisionedThroughput.writeCapacityUnits, 0}
 
   Tags:
     - Key: backup

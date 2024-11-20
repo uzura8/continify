@@ -311,35 +311,6 @@ def validation_schema_services():
                     'max': 50,
                     'default': 5,
                 },
-                'jumpPageUrl': {
-                    'type': 'string',
-                    'coerce': (NormalizerUtils.trim),
-                    'valid_url': True,
-                    'required': False,
-                    'empty': True,
-                    'nullable': True,
-                },
-                'jumpPageParamKey': {
-                    'type': 'string',
-                    'coerce': (NormalizerUtils.trim),
-                    'required': False,
-                    'empty': True,
-                    'nullable': True,
-                },
-                'analysisParamKeyDefault': {
-                    'type': 'string',
-                    'coerce': (NormalizerUtils.trim),
-                    'required': False,
-                    'empty': True,
-                    'nullable': True,
-                },
-                'analysisParamsGetApiUrl': {
-                    'type': 'string',
-                    'coerce': (NormalizerUtils.trim),
-                    'required': False,
-                    'empty': True,
-                    'nullable': True,
-                },
             }
         },
     }

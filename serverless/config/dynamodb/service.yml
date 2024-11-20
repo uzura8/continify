@@ -10,10 +10,10 @@ Properties:
       AttributeName: serviceId
       KeyType: HASH
 
-  BillingMode: ${self:custom.dynamodbConfig.service.billingMode}
+  BillingMode: ${self:custom.dynamodbConfig.service.billingMode, 'PAY_PER_REQUEST'}
   ProvisionedThroughput:
-    ReadCapacityUnits: ${self:custom.dynamodbConfig.service.provisionedThroughput.readCapacityUnits}
-    WriteCapacityUnits: ${self:custom.dynamodbConfig.service.provisionedThroughput.writeCapacityUnits}
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.service.provisionedThroughput.readCapacityUnits, 0}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.service.provisionedThroughput.writeCapacityUnits, 0}
 
   Tags:
     - Key: backup

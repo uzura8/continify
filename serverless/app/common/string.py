@@ -98,13 +98,13 @@ def validate_email(email):
     if not email:
         return False
 
-    pattern = '^([_a-z0-9-]+(\.[_a-z0-9-]+)*)' +\
-        '@([a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4}))$'
+    pattern = r'^([_a-z0-9-]+(\.[_a-z0-9-]+)*)' +\
+        r'@([a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4}))$'
     return re.findall(pattern, email)
 
 
 def validate_url(url):
-    return re.match('^https?://[\w\-\.\!~\*\'\(\);\/\?\:@&=+\$,%#]+$', url)
+    return re.match(r'^https?://[\w\-\.\!~\*\'\(\);\/\?\:@&=+\$,%#]+$', url)
 
 
 def validate_json(json_string):

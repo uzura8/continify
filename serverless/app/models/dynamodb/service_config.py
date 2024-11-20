@@ -54,26 +54,6 @@ class ServiceConfig(Base):
             'default': 5,
         },
         {
-            'configName': 'jumpPageUrl',
-            'isJson': False,
-            'default': '',
-        },
-        {
-            'configName': 'jumpPageParamKey',
-            'isJson': False,
-            'default': '',
-        },
-        {
-            'configName': 'analysisParamKeyDefault',
-            'isJson': False,
-            'default': '',
-        },
-        {
-            'configName': 'analysisParamsGetApiUrl',
-            'isJson': False,
-            'default': '',
-        },
-        {
             'configName': 'commentDefaultPublishStatus',
             'isJson': False,
             'default': 'unpublish',

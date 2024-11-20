@@ -17,7 +17,7 @@ class Service(Base):
     ]
     all_attrs = public_attrs + private_attrs
 
-    allowed_functions = ['post', 'urlShortener', 'comment']
+    allowed_functions = ['post', 'comment']
 
     @classmethod
     def get_one_by_id(self, service_id):

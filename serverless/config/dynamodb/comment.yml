@@ -22,10 +22,10 @@ Properties:
       AttributeName: commentId
       KeyType: HASH
 
-  BillingMode: ${self:custom.dynamodbConfig.comment.billingMode}
+  BillingMode: ${self:custom.dynamodbConfig.comment.billingMode, 'PAY_PER_REQUEST'}
   ProvisionedThroughput:
-    ReadCapacityUnits: ${self:custom.dynamodbConfig.comment.provisionedThroughput.readCapacityUnits}
-    WriteCapacityUnits: ${self:custom.dynamodbConfig.comment.provisionedThroughput.writeCapacityUnits}
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.comment.provisionedThroughput.readCapacityUnits, 0}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.comment.provisionedThroughput.writeCapacityUnits, 0}
 
   Tags:
     - Key: backup

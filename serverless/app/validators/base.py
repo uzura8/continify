@@ -17,7 +17,7 @@ class ValidatorExtended(Validator):
         """
         The rule's arguments are validated against this schema: {'type': 'boolean'}
         """
-        if (tel and value and not re.match('^\d{10,11}$', value)):
+        if (tel and value and not re.match(r'^\d{10,11}$', value)):
             self._error(field, 'tel is invalid')
 
     def _validate_valid_url(self, url, field, value):

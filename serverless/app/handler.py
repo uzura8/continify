@@ -12,7 +12,6 @@ from app.post import bp as post_module
 from app.comment import bp as comment_module
 from app.category import bp as category_module
 from app.tag import bp as tag_module
-from app.shorten_url import bp as shorten_url_module
 from app.admin import bp as admin_module
 from app.contact import bp as contact_module
 
@@ -125,7 +124,6 @@ app.register_blueprint(category_module)
 app.register_blueprint(tag_module)
 app.register_blueprint(post_module)
 app.register_blueprint(comment_module)
-app.register_blueprint(shorten_url_module)
 app.register_blueprint(admin_module)
 app.register_blueprint(root_module)
 app.register_blueprint(contact_module)

@@ -246,16 +246,9 @@
     "ExpAboutNewTagsSeparater": "新規タグを追加する場合は「, (カンマ)」で区切って指定してください",
     "hideInList": "一覧に表示しない",
     "specifyingFilterConditions": "絞り込み条件を指定",
-    "isViaJumpPageLabel": "計測用パラメータ設定",
-    "viaJumpPage": "ジャンプページを経由する",
-    "notViaJumpPage": "ジャンプページを経由しない",
     "functionToApply": "適用する機能",
     "outerSiteUrl": "外部サイトURL",
     "frontendPostDetailUrlPrefix": "投稿詳細のURLプレフィックス",
-    "jumpPageUrl": "解析用ジャンプページのURL",
-    "jumpPageParamKey": "解析用ジャンプページURLのクエリキー",
-    "analysisParamKeyDefault": "解析用クエリキーの初期値",
-    "analysisParamsGetApiUrl": "解析用パラメータ取得APIのURL",
     "mediaUploadAcceptMimetypesFor": "{target}のアップロード許可メディアタイプ",
     "mediaUploadImageSizes": "アップロード画像サイズリスト",
     "mediaUploadSizeLimitMBImage": "アップロード画像サイズ上限 (MB)",
@@ -288,16 +281,12 @@
     "rawHtml": "生HTML",
     "json": "JSON",
     "postGroup": "投稿グループ",
-    "shortenUrl": "短縮URL",
-    "urlForQrCode": "転送URL",
     "generateUrl": "生成されるURL",
     "generatedUrl": "生成されたURL",
     "acceptServices": "使用可能なサービス",
-    "accessAnalysis": "アクセス解析",
     "hiddenInListLabel": "一覧非表示",
     "availableFunctions": {
       "post": "投稿",
-      "urlShortener": "転送URL",
       "comment": "コメント"
     },
     "autoInput": "自動入力",
@@ -325,11 +314,9 @@
     "AdminUserManagement": "ユーザ管理",
     "AdminPostGroupManagement": "投稿グループ管理",
     "AdminPostCategoryManagement": "投稿カテゴリ管理",
-    "ShortenUrlList": "転送URL一覧",
     "managementOf": "{label}管理",
     "adminFunctions": {
       "post": "投稿管理",
-      "urlShortener": "転送URL管理",
       "comment": "コメント管理"
     },
     "about": "このサイトについて"
@@ -366,40 +353,6 @@
       "nickname": "ニックネーム",
       "age": "年代",
       "area": "地域"
-    }
-  },
-  "shortenUrl": {
-    "term": {
-      "assigneeConfirmedYes": "Web 担当者確認済み",
-      "assigneeConfirmedNo": "Web 担当者未確認",
-      "confirmationStatus": "確認状態"
-    },
-    "msg": {
-      "restrictionsForFilterConditions": "絞り込み条件は一つのみ指定できます",
-      "assigneeNameIsRequiredOnCheckedIsConfirmed": "「確認済み」にする場合、「Web 担当者名」は必ず入力する必要があります"
-    },
-    "form": {
-      "descriptionPlaceholder": "遷移先ページの名称や、遷移先が未公開の場合はURLの確定日や公開日などを記入",
-      "assigneeName": "Web 担当者名 (フルネーム)",
-      "assigneeMemoPlaceholder": "確認の際、遷移先URLやパラメータを変更した場合に記入",
-      "isMeasureLabelYes": "遷移数を計測する",
-      "isMeasureLabelYesShort": "遷移数の計測",
-      "isMeasureLabelNo": "計測しない",
-      "isUsePresetParamsLabelYes": "媒体名を選択",
-      "isUsePresetParamsLabelNo": "その他",
-      "isUsePresetParamsHelperText": "プルダウンに載っていない媒体は「その他」を選択",
-      "trackingParamMedia": "掲載媒体",
-      "trackingParamLocation": "掲載場所",
-      "trackingParamOptionalSuffix": "企画回(5桁)または発行年月(４桁)",
-      "paramValue": "パラメータの値",
-      "paramValueHelperText": "推奨される入力形式: 媒体名(半角英数)-企画回(5桁)または発行年月(4桁)",
-      "generateTrackingParamValue": "生成されるパラメータの値",
-      "isViaJumpPageLabel": "遷移先が YouTube などの自サイト外の場合",
-      "isViaJumpPageLabelSub": "(計測のためリダイレクト処理を行う)",
-      "isViaJumpPageLabelShort": "計測のためのリダイレクト処理",
-      "fieldLabelUrlFilter": "URL を指定する(前方一致)",
-      "fieldItemLabelStatusFilter": "未確認の項目のみ表示する",
-      "generatedSeqNo": "生成されるNo"
     }
   },
   "site": {

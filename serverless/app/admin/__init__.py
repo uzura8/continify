@@ -73,4 +73,3 @@ from . import tag
 from . import file
 from . import account
 from . import comment
-from . import shorten_url

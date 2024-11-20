@@ -23,8 +23,6 @@ from app.models.dynamodb import (
     File,
     VoteCount,
     VoteLog,
-    ShortenUrl,
-    ShortenUrlDomain,
 )
 
 allowed_tables = [
@@ -44,8 +42,6 @@ allowed_tables = [
     'vote_count',
     'vote_log',
     '.contact',
-    'shorten_url',
-    'shorten_url_domain',
 ]
 
 

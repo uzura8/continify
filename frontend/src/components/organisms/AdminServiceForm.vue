@@ -186,98 +186,6 @@
         <label class="checkbox">
           <input
             v-model="functions"
-            value="urlShortener"
-            type="checkbox"
-          />
-          {{ $t('term.availableFunctions.urlShortener') }}
-        </label>
-      </div>
-    </div>
-
-    <div
-      v-if="functions.includes('urlShortener')"
-      class="pl-5 pt-2 pb-4"
-    >
-      <div class="formgrid grid">
-        <div class="field col">
-          <label class="font-semibold">
-            {{ $t('form.jumpPageUrl') }}
-          </label>
-          <InputText
-            v-model="jumpPageUrl"
-            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-            :class="{ 'p-invalid': checkEmpty(errors.jumpPageUrl) === false }"
-            @blur="validate('jumpPageUrl')"
-          />
-          <p
-            v-if="checkEmpty(errors.jumpPageUrl) === false"
-            class="p-error p-2 text-sm"
-          >
-            {{ errors.jumpPageUrl[0] }}
-          </p>
-        </div>
-
-        <div class="field col">
-          <label class="font-semibold">
-            {{ $t('form.jumpPageParamKey') }}
-          </label>
-          <InputText
-            v-model="jumpPageParamKey"
-            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-            :class="{ 'p-invalid': checkEmpty(errors.jumpPageParamKey) === false }"
-            @blur="validate('jumpPageParamKey')"
-          />
-          <p
-            v-if="checkEmpty(errors.jumpPageParamKey) === false"
-            class="p-error p-2 text-sm"
-          >
-            {{ errors.jumpPageParamKey[0] }}
-          </p>
-        </div>
-      </div>
-
-      <div class="field mt-5">
-        <label class="font-semibold">
-          {{ $t('form.analysisParamKeyDefault') }}
-        </label>
-        <InputText
-          v-model="analysisParamKeyDefault"
-          class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-          :class="{ 'p-invalid': checkEmpty(errors.analysisParamKeyDefault) === false }"
-          @blur="validate('analysisParamKeyDefault')"
-        />
-        <p
-          v-if="checkEmpty(errors.analysisParamKeyDefault) === false"
-          class="p-error p-2 text-sm"
-        >
-          {{ errors.analysisParamKeyDefault[0] }}
-        </p>
-      </div>
-
-      <div class="field mt-5">
-        <label class="font-semibold">
-          {{ $t('form.analysisParamsGetApiUrl') }}
-        </label>
-        <InputText
-          v-model="analysisParamsGetApiUrl"
-          class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-          :class="{ 'p-invalid': checkEmpty(errors.analysisParamsGetApiUrl) === false }"
-          @blur="validate('analysisParamsGetApiUrl')"
-        />
-        <p
-          v-if="checkEmpty(errors.analysisParamsGetApiUrl) === false"
-          class="p-error p-2 text-sm"
-        >
-          {{ errors.analysisParamsGetApiUrl[0] }}
-        </p>
-      </div>
-    </div>
-
-    <div class="field mb-2">
-      <div class="flex align-items-center">
-        <label class="checkbox">
-          <input
-            v-model="functions"
             value="comment"
             type="checkbox"
           />
@@ -381,10 +289,6 @@ export default {
       mediaUploadSizeLimitMBImage: '',
       mediaUploadAcceptMimetypesFile: '',
       mediaUploadSizeLimitMBFile: '',
-      jumpPageUrl: '',
-      jumpPageParamKey: '',
-      analysisParamKeyDefault: '',
-      analysisParamsGetApiUrl: '',
       commentDefaultPublishStatus: 'unpublish',
       commentDefaultPublishStatusOptions: ['publish', 'unpublish', 'unconfirm'],
       fieldKeys: [
@@ -398,10 +302,6 @@ export default {
         'mediaUploadSizeLimitMBImage',
         'mediaUploadAcceptMimetypesFile',
         'mediaUploadSizeLimitMBFile',
-        'jumpPageUrl',
-        'jumpPageParamKey',
-        'analysisParamKeyDefault',
-        'analysisParamsGetApiUrl',
         'commentDefaultPublishStatus'
       ]
     }
@@ -426,10 +326,6 @@ export default {
       if (!this.checkEmpty(this.mediaUploadSizeLimitMBImage)) return false
       if (!this.checkEmpty(this.mediaUploadAcceptMimetypesFile)) return false
       if (!this.checkEmpty(this.mediaUploadSizeLimitMBFile)) return false
-      if (!this.checkEmpty(this.jumpPageUrl)) return false
-      if (!this.checkEmpty(this.jumpPageParamKey)) return false
-      if (!this.checkEmpty(this.analysisParamKeyDefault)) return false
-      if (!this.checkEmpty(this.analysisParamsGetApiUrl)) return false
       if (!this.checkEmpty(this.commentDefaultPublishStatus)) return false
       return true
     },
@@ -485,20 +381,6 @@ export default {
           this.service.configs.mediaUploadSizeLimitMBFile != null
             ? String(this.service.configs.mediaUploadSizeLimitMBFile)
             : ''
-        this.jumpPageUrl =
-          this.service.configs.jumpPageUrl != null ? String(this.service.configs.jumpPageUrl) : ''
-        this.jumpPageParamKey =
-          this.service.configs.jumpPageParamKey != null
-            ? String(this.service.configs.jumpPageParamKey)
-            : ''
-        this.analysisParamKeyDefault =
-          this.service.configs.analysisParamKeyDefault != null
-            ? String(this.service.configs.analysisParamKeyDefault)
-            : ''
-        this.analysisParamsGetApiUrl =
-          this.service.configs.analysisParamsGetApiUrl != null
-            ? String(this.service.configs.analysisParamsGetApiUrl)
-            : ''
         this.commentDefaultPublishStatus =
           this.service.configs.commentDefaultPublishStatus != null
             ? String(this.service.configs.commentDefaultPublishStatus)
@@ -548,10 +430,6 @@ export default {
         vals.configs.mediaUploadSizeLimitMBImage = this.mediaUploadSizeLimitMBImage
         vals.configs.mediaUploadAcceptMimetypesFile = this.mediaUploadAcceptMimetypesFile
         vals.configs.mediaUploadSizeLimitMBFile = this.mediaUploadSizeLimitMBFile
-        vals.configs.jumpPageUrl = this.jumpPageUrl
-        vals.configs.jumpPageParamKey = this.jumpPageParamKey
-        vals.configs.analysisParamKeyDefault = this.analysisParamKeyDefault
-        vals.configs.analysisParamsGetApiUrl = this.analysisParamsGetApiUrl
         vals.configs.commentDefaultPublishStatus = this.commentDefaultPublishStatus
 
         this.$store.dispatch('setLoading', true)
@@ -660,16 +538,6 @@ export default {
         if (hasError === true) {
           this.globalError = this.$t('msg.invalidError', { field: this.$t('form.functionToApply') })
         }
-      }
-    },
-
-    validateJumpPageUrl() {
-      this.initError('jumpPageUrl')
-      if (this.jumpPageUrl === null) this.jumpPageUrl = ''
-      this.jumpPageUrl = this.jumpPageUrl.trim()
-      if (this.checkEmpty(this.jumpPageUrl) === false) {
-        if (str.checkUrl(this.jumpPageUrl) === false)
-          this.errors.jumpPageUrl.push(this.$t('msg.InvalidInput'))
       }
     },
 

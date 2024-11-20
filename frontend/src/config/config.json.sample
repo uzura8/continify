@@ -4,7 +4,7 @@
   "baseUrl": "/",
   "isSSL": false,
   "isDebug": false,
-  "siteName": "GPCMS",
+  "siteName": "MicroPress",
   "logoUrls": {
     "site": "/statics/img/logo.png",
     "admin": "/statics/img/logo-w.png"
@@ -13,9 +13,9 @@
   "isEnabledComment": true,
   "adminAuthHeader": "Authorization",
   "adminAuthHeaderTokenPrefix": "Bearer",
-  "availableFunctions": ["post", "urlShortener"],
+  "availableFunctions": ["post"],
   "post": {
-    "isEditablePostBodyOnPageByMarkdown": false,
+    "isEditablePostBodyOnPageByMarkdown": true,
     "defaultEditorMode": "richText",
     "autoSlugSet": {
       "isEnabled": false,
@@ -27,10 +27,6 @@
     "url": "https://media.example.com"
   },
   "tinyMCEApiKey": null,
-  "voteTypesDefault": ["like", "dislike"],
-  "shortenUrl": {
-    "redirectBaseUrl": "https://rd.example.com/",
-    "waitingTimeForQrCodeCreated": 12
-  }
+  "voteTypesDefault": ["like", "dislike"]
 }
 
