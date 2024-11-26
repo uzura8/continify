@@ -38,6 +38,7 @@ jobs:
           cd frontend
           aws s3 cp s3://$S3_CONFIG_BUCKET/config.json ./src/config/ --quiet
           aws s3 cp s3://$S3_CONFIG_BUCKET/cognito-client-config.json ./src/config/ --quiet
+          aws s3 cp s3://$S3_CONFIG_BUCKET/serviceConfig.json ./src/config/ --quiet
 
       - name: Build by Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
