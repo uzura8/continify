@@ -81,9 +81,6 @@ custom:
   associateWaf:
     name: ${file(${self:custom.stageConfigFileName}):wafName}
     version: V2 #(optional) Regional | V2
-  serverlessIfElse:
-    - If: ${file(${self:custom.stageConfigFileName}):excludeFunctions}
-      Exclude: ${file(${self:custom.stageConfigFileName}):excludeFunctions}
 
 provider:
   name: aws
