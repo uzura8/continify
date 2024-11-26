@@ -1,7 +1,7 @@
 # Continify
 
 **Headless CMS with Serverless Architecture**  
-**Infinite possibilities for your content.**
+**Infinite possibilities for your content!**
 
 With a client-side application, you can build unlimited blogs effortlessly using just MicroPress.
 
